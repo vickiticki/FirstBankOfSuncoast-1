@@ -21,8 +21,19 @@ namespace FirstBankOfSuncoast
 
         private List<Transaction> transactions = new List<Transaction>();
 
+        // to check things 
+        public List<Transaction> GetAllTransactions()
+        {
+            return transactions;
+        }
+
         // Get input from user and add to list
         // (save to csv)
+        public void AddTransaction(Transaction newTransaction)
+        {
+            transactions.Add(newTransaction);
+
+        }
 
         // THIS PART MIGHT MOVE
         // Method to calculate savings 
@@ -38,10 +49,27 @@ namespace FirstBankOfSuncoast
     }
     class Program
     {
+        static int PromptForInt(string prompt)
+        {
+            Console.Write(prompt);
+            int userInput;
+            var isThisInteger = Int32.TryParse(Console.ReadLine(), out userInput);
+            if (isThisInteger)
+            {
+                return userInput;
+            }
+            else
+            {
+                Console.WriteLine("Not a number. Please try again.");
+                return 0;
+            }
+        }
+
         static void Main(string[] args)
         {
-            Console.WriteLine("Welcome to the First Bank of Suncoast");
 
+            Console.WriteLine("Welcome to the First Bank of Suncoast");
+            var database = new TransactionDatabase();
             var keepGoing = true;
 
             while (keepGoing)
@@ -73,16 +101,28 @@ namespace FirstBankOfSuncoast
                             case "C":
                                 // Ask for amount 
                                 Console.WriteLine();
-                                Console.WriteLine("How much would you like to deposit?");
+                                var depositC = new Transaction();
+
+                                depositC.TransactionAmount = PromptForInt("How much would you like to deposit? ");
+                                depositC.TransactionType = "deposit";
+                                depositC.AccountType = "checking";
+
                                 // Send to transaction list 
+
+                                database.AddTransaction(depositC);
                                 // (display new checking balance?)
                                 break;
                             // Deposit to savings
                             case "S":
                                 Console.WriteLine();
-                                Console.WriteLine("How much would you like to withdraw?");
+
+                                var depositS = new Transaction();
                                 // Ask for amount 
+                                depositS.TransactionAmount = PromptForInt("How much would you like to withdraw? ");
+                                depositS.TransactionType = "deposit";
+                                depositS.AccountType = "savings";
                                 // Send to transaction list
+                                database.AddTransaction(depositS);
                                 // (display new savings balance?)
                                 break;
                             case "X":
@@ -122,6 +162,16 @@ namespace FirstBankOfSuncoast
 
                         // Display both
                         Console.WriteLine($"You have __ in your checking and __ in your savings.");
+
+
+                        // test transactions--delete later
+                        var checkTransactions = database.GetAllTransactions();
+                        foreach (var t in checkTransactions)
+                        {
+                            Console.WriteLine(t.AccountType);
+                            Console.WriteLine(t.TransactionType);
+                            Console.WriteLine(t.TransactionAmount);
+                        }
 
                         break;
 
