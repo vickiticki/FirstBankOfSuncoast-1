@@ -37,14 +37,53 @@ namespace FirstBankOfSuncoast
 
         // THIS PART MIGHT MOVE
         // Method to calculate savings 
-        // Initial balance = 0
-        // For each deposit add money to balance
-        // For each withdrawal subtract money from balance
-        // Method to calculate checking
-        // Initial balance = 0
-        // For each deposit add money to balance
-        // For each withdrawal subtract money from balance
+        public int GetSavings()
+        {
+            // Initial balance = 0
+            var savingsBalance = 0;
+            foreach (var transactionS in transactions)
+            {
+                if (transactionS.AccountType == "savings")
+                {
+                    // For each deposit add money to balance
+                    if (transactionS.TransactionType == "deposit")
+                    {
+                        savingsBalance += transactionS.TransactionAmount;
+                    }
+                    else
+                    {
+                        // For each withdrawal subtract money from balance
+                        savingsBalance -= transactionS.TransactionAmount;
+                    }
 
+                }
+            }
+            return savingsBalance;
+        }
+        // Method to calculate checking
+        public int GetChecking()
+        {
+            // Initial balance = 0
+            var checkingBalance = 0;
+            foreach (var transactionC in transactions)
+            {
+                // For each deposit add money to balance
+                if (transactionC.AccountType == "checking")
+                {
+                    if (transactionC.TransactionType == "deposit")
+                    {
+                        checkingBalance += transactionC.TransactionAmount;
+                    }
+                    else
+                    {
+                        checkingBalance -= transactionC.TransactionAmount;
+                    }
+                }
+
+            }
+            // For each withdrawal subtract money from balance
+            return checkingBalance;
+        }
 
     }
     class Program
@@ -118,7 +157,7 @@ namespace FirstBankOfSuncoast
 
                                 var depositS = new Transaction();
                                 // Ask for amount 
-                                depositS.TransactionAmount = PromptForInt("How much would you like to withdraw? ");
+                                depositS.TransactionAmount = PromptForInt("How much would you like to deposit? ");
                                 depositS.TransactionType = "deposit";
                                 depositS.AccountType = "savings";
                                 // Send to transaction list
@@ -139,19 +178,72 @@ namespace FirstBankOfSuncoast
 
                         Console.WriteLine("Will you like to withdraw from (C)hecking or (S)avings? E(X)it");
                         var withdrawAccount = Console.ReadLine().ToUpper();
-                        // Withdraw from checking
-                        // Get checking balance
-                        // Ask for amount 
-                        // If more than balance, display error message
-                        // If ok, send to transaction list
-                        // (display new checking balance?)
 
-                        // Withdraw from savings
-                        // Get savings balance
-                        // Ask for amount
-                        // If more than balance, display error message
-                        // If ok, send to transaction list
-                        // (display new savings balance?)
+                        switch (withdrawAccount)
+                        {
+                            // Withdraw from checking
+                            case "C":
+                                Console.WriteLine();
+                                // Ask for amount 
+                                var amountCW = PromptForInt("How much would you like to withdraw? ");
+                                // Get checking balance
+                                var balanceC = database.GetChecking();
+                                // If ok, send to transaction list
+                                if (amountCW <= balanceC)
+                                {
+                                    var withdrawalC = new Transaction();
+                                    withdrawalC.TransactionAmount = amountCW;
+                                    withdrawalC.TransactionType = "withdrawal";
+                                    withdrawalC.AccountType = "checking";
+                                    database.AddTransaction(withdrawalC);
+
+                                }
+                                else
+                                {
+                                    // If more than balance, display error message
+                                    Console.WriteLine($"Sorry, you cannot withdraw more than what is in the account. Your checking balance is {balanceC}");
+                                }
+
+                                break;
+                            // (display new checking balance?)
+
+                            // Withdraw from savings
+                            case "S":
+                                Console.WriteLine();
+                                var amountSW = PromptForInt("How much would you like to withdraw? ");
+                                // Get checking balance
+                                var balanceS = database.GetSavings();
+                                // If ok, send to transaction list
+                                if (amountSW <= balanceS)
+                                {
+                                    var withdrawalS = new Transaction();
+                                    withdrawalS.TransactionAmount = amountSW;
+                                    withdrawalS.TransactionType = "withdrawal";
+                                    withdrawalS.AccountType = "savings";
+                                    database.AddTransaction(withdrawalS);
+
+                                }
+                                else
+                                {
+                                    // If more than balance, display error message
+                                    Console.WriteLine($"Sorry, you cannot withdraw more than what is in the account. Your checking balance is {balanceS}");
+                                }
+
+                                break;
+                            // Get savings balance
+                            // Ask for amount
+                            // If more than balance, display error message
+                            // If ok, send to transaction list
+                            // (display new savings balance?)
+
+                            case "X":
+                                break;
+
+                            default:
+                                Console.WriteLine("Error. Please try again.");
+                                break;
+                        }
+
                         break;
 
                     // View balance of both
@@ -161,15 +253,14 @@ namespace FirstBankOfSuncoast
                         // Get savings balance
 
                         // Display both
-                        Console.WriteLine($"You have __ in your checking and __ in your savings.");
+                        Console.WriteLine($"You have {database.GetChecking()} in your checking and {database.GetSavings()} in your savings.");
 
-
-                        // test transactions--delete later
+                        // test transactions--DELETE LATER
                         var checkTransactions = database.GetAllTransactions();
                         foreach (var t in checkTransactions)
                         {
-                            Console.WriteLine(t.AccountType);
-                            Console.WriteLine(t.TransactionType);
+                            Console.Write(t.AccountType + " ");
+                            Console.Write(t.TransactionType + " ");
                             Console.WriteLine(t.TransactionAmount);
                         }
 
