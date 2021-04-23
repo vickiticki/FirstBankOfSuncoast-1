@@ -66,12 +66,19 @@ namespace FirstBankOfSuncoast
                                 depositC.TransactionAmount = PromptForInt("How much would you like to deposit? ");
                                 depositC.TransactionType = "deposit";
                                 depositC.AccountType = "checking";
+                                // check for negatives
+                                if (depositC.TransactionAmount <= 0)
+                                {
+                                    Console.WriteLine("Sorry, deposits must be greater than zero.");
+                                }
+                                else
+                                {
+                                    // Send to transaction list 
 
-                                // Send to transaction list 
-
-                                database.AddTransaction(depositC);
-                                // (display new checking balance?)
-                                database.SaveTransactionsToCSV();
+                                    database.AddTransaction(depositC);
+                                    // (display new checking balance?)
+                                    database.SaveTransactionsToCSV();
+                                }
                                 break;
                             // Deposit to savings
                             case "S":
@@ -82,10 +89,18 @@ namespace FirstBankOfSuncoast
                                 depositS.TransactionAmount = PromptForInt("How much would you like to deposit? ");
                                 depositS.TransactionType = "deposit";
                                 depositS.AccountType = "savings";
-                                // Send to transaction list
-                                database.AddTransaction(depositS);
-                                // (display new savings balance?)
-                                database.SaveTransactionsToCSV();
+                                // check for negatives
+                                if (depositS.TransactionAmount <= 0)
+                                {
+                                    Console.WriteLine("Sorry, deposits must be greater than zero.");
+                                }
+                                else
+                                {
+                                    // Send to transaction list
+                                    database.AddTransaction(depositS);
+                                    // (display new savings balance?)
+                                    database.SaveTransactionsToCSV();
+                                }
                                 break;
                             case "X":
                                 break;
@@ -119,7 +134,16 @@ namespace FirstBankOfSuncoast
                                     withdrawalC.TransactionAmount = amountCW;
                                     withdrawalC.TransactionType = "withdrawal";
                                     withdrawalC.AccountType = "checking";
-                                    database.AddTransaction(withdrawalC);
+                                    // check for negatives
+                                    if (withdrawalC.TransactionAmount <= 0)
+                                    {
+                                        Console.WriteLine("Sorry, withdrawals must be greater than zero.");
+                                    }
+                                    else
+                                    {
+                                        database.AddTransaction(withdrawalC);
+                                        database.SaveTransactionsToCSV();
+                                    }
 
                                 }
                                 else
@@ -128,7 +152,6 @@ namespace FirstBankOfSuncoast
                                     Console.WriteLine($"Sorry, you cannot withdraw more than what is in the account. Your checking balance is {balanceC}");
                                 }
 
-                                database.SaveTransactionsToCSV();
                                 break;
                             // (display new checking balance?)
 
@@ -145,7 +168,16 @@ namespace FirstBankOfSuncoast
                                     withdrawalS.TransactionAmount = amountSW;
                                     withdrawalS.TransactionType = "withdrawal";
                                     withdrawalS.AccountType = "savings";
-                                    database.AddTransaction(withdrawalS);
+                                    // check for negatives
+                                    if (withdrawalS.TransactionAmount <= 0)
+                                    {
+                                        Console.WriteLine("Sorry, withdrawals must be greater than zero.");
+                                    }
+                                    else
+                                    {
+                                        database.AddTransaction(withdrawalS);
+                                        database.SaveTransactionsToCSV();
+                                    }
 
                                 }
                                 else
@@ -153,7 +185,6 @@ namespace FirstBankOfSuncoast
                                     // If more than balance, display error message
                                     Console.WriteLine($"Sorry, you cannot withdraw more than what is in the account. Your checking balance is {balanceS}");
                                 }
-                                database.SaveTransactionsToCSV();
                                 break;
                             // Get savings balance
                             // Ask for amount
