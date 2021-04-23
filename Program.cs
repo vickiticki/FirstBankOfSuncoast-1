@@ -27,9 +27,9 @@ namespace FirstBankOfSuncoast
 
         static void Main(string[] args)
         {
-
-            Console.WriteLine("Welcome to the First Bank of Suncoast");
             var database = new TransactionDatabase();
+            database.LoadTransactionsFromCSV();
+            Console.WriteLine("Welcome to the First Bank of Suncoast");
             var keepGoing = true;
 
             while (keepGoing)
@@ -71,6 +71,7 @@ namespace FirstBankOfSuncoast
 
                                 database.AddTransaction(depositC);
                                 // (display new checking balance?)
+                                database.SaveTransactionsToCSV();
                                 break;
                             // Deposit to savings
                             case "S":
@@ -84,12 +85,14 @@ namespace FirstBankOfSuncoast
                                 // Send to transaction list
                                 database.AddTransaction(depositS);
                                 // (display new savings balance?)
+                                database.SaveTransactionsToCSV();
                                 break;
                             case "X":
                                 break;
                             default:
                                 Console.WriteLine("Error. Please try again.");
                                 break;
+
                         }
 
                         break;
@@ -125,6 +128,7 @@ namespace FirstBankOfSuncoast
                                     Console.WriteLine($"Sorry, you cannot withdraw more than what is in the account. Your checking balance is {balanceC}");
                                 }
 
+                                database.SaveTransactionsToCSV();
                                 break;
                             // (display new checking balance?)
 
@@ -149,7 +153,7 @@ namespace FirstBankOfSuncoast
                                     // If more than balance, display error message
                                     Console.WriteLine($"Sorry, you cannot withdraw more than what is in the account. Your checking balance is {balanceS}");
                                 }
-
+                                database.SaveTransactionsToCSV();
                                 break;
                             // Get savings balance
                             // Ask for amount
@@ -175,15 +179,57 @@ namespace FirstBankOfSuncoast
 
                         // Display both
                         Console.WriteLine($"You have {database.GetChecking()} in your checking and {database.GetSavings()} in your savings.");
+                        Console.WriteLine();
+                        Console.WriteLine("Would you like to see your (C)hecking transactions, (S)avings transaction, or (R)eturn to main menu? ");
+                        var choice = Console.ReadLine().ToUpper();
+                        switch (choice)
+                        {
+                            case "S":
+                                Console.WriteLine();
+                                Console.WriteLine("Savings Transactions:");
+                                var savingTransactions = database.GetSavingsTransactions();
+                                if (savingTransactions.Count == 0)
+                                {
+                                    Console.WriteLine("No Transactions");
+                                }
+                                else
+                                {
+                                    foreach (var st in savingTransactions)
+                                    {
+                                        Console.Write(st.TransactionType + ":  ");
+                                        Console.WriteLine("$" + st.TransactionAmount);
+                                    }
+                                }
+                                break;
+                            case "C":
+                                Console.WriteLine();
+                                Console.WriteLine("Checking Transactions");
+                                var checkingTransactions = database.GetCheckingTransactions();
+                                if (checkingTransactions.Count == 0)
+                                {
+                                    Console.WriteLine("No Transactions");
+                                }
+                                else
+                                {
+                                    foreach (var ct in checkingTransactions)
+                                    {
+                                        Console.Write(ct.TransactionType + ":  ");
+                                        Console.WriteLine("$" + ct.TransactionAmount);
+                                    }
+                                }
+                                break;
+                            default:
+                                break;
+                        }
 
                         // test transactions--DELETE LATER
-                        var checkTransactions = database.GetAllTransactions();
-                        foreach (var t in checkTransactions)
-                        {
-                            Console.Write(t.AccountType + " ");
-                            Console.Write(t.TransactionType + " ");
-                            Console.WriteLine(t.TransactionAmount);
-                        }
+                        // var checkTransactions = database.GetAllTransactions();
+                        // foreach (var t in checkTransactions)
+                        // {
+                        //     Console.Write(t.AccountType + " ");
+                        //     Console.Write(t.TransactionType + " ");
+                        //     Console.WriteLine(t.TransactionAmount);
+                        // }
 
                         break;
 

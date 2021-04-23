@@ -1,3 +1,8 @@
+using System;
+using System.Linq;
+using System.Globalization;
+using System.IO;
+using CsvHelper;
 using System.Collections.Generic;
 
 
@@ -13,6 +18,34 @@ namespace FirstBankOfSuncoast
         public List<Transaction> GetAllTransactions()
         {
             return transactions;
+        }
+
+        public List<Transaction> GetSavingsTransactions()
+        {
+            var savingsList = new List<Transaction>();
+            foreach (var tSavings in transactions)
+            {
+                if (tSavings.AccountType == "savings")
+                {
+                    savingsList.Add(tSavings);
+                }
+
+            }
+
+            return savingsList;
+        }
+
+        public List<Transaction> GetCheckingTransactions()
+        {
+            var checkingList = new List<Transaction>();
+            foreach (var tChecking in transactions)
+            {
+                if (tChecking.AccountType == "checking")
+                {
+                    checkingList.Add(tChecking);
+                }
+            }
+            return checkingList;
         }
 
         // Get input from user and add to list
@@ -71,7 +104,26 @@ namespace FirstBankOfSuncoast
             }
             // For each withdrawal subtract money from balance
             return checkingBalance;
-        }
 
+        }
+        public void LoadTransactionsFromCSV()
+        {
+            // Load the list of employees
+            if (File.Exists("transactions.csv"))
+            {
+                var fileReader = new StreamReader("transactions.csv");
+                var csvReader = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                transactions = csvReader.GetRecords<Transaction>().ToList();
+                fileReader.Close();
+            }
+        }
+        public void SaveTransactionsToCSV()
+        {
+            // Save the list of employees
+            var fileWriter = new StreamWriter("transactions.csv");
+            var csvWriter = new CsvWriter(fileWriter, CultureInfo.InvariantCulture);
+            csvWriter.WriteRecords(transactions);
+            fileWriter.Close();
+        }
     }
 }
