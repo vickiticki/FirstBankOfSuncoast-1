@@ -37,7 +37,7 @@ namespace FirstBankOfSuncoast
                 // Display menu with options:
                 Console.WriteLine();
                 Console.WriteLine("What would you like to do today?");
-                Console.WriteLine("(D)eposit   (W)ithdrawal   (V)iew Balance   (Q)uit");
+                Console.WriteLine("(D)eposit   (W)ithdrawal   (T)ransfer  (V)iew Balance   (Q)uit");
                 var response = Console.ReadLine().ToUpper();
                 Console.WriteLine();
 
@@ -203,6 +203,80 @@ namespace FirstBankOfSuncoast
                         break;
 
                     // View balance of both
+                    case "T":
+
+                        // ask where to transfer
+                        Console.WriteLine();
+                        Console.WriteLine("Would you like to (A) transfer from savings to checking, or (B) transfer from checking to savings? (R)eturn to Main Menu");
+                        var transferWhere = Console.ReadLine().ToUpper();
+
+                        Console.WriteLine();
+
+                        switch (transferWhere)
+                        {
+                            case "A":
+                                // savings to checking
+
+                                var transferAmountToC = PromptForInt("How much would you like to transfer?");
+
+                                var balanceS = database.GetSavings();
+                                if (transferAmountToC <= balanceS)
+                                {
+                                    // make transfer
+                                    var transferToChecking = new Transaction();
+                                    transferToChecking.TransactionAmount = transferAmountToC;
+                                    transferToChecking.TransactionType = "transfer to checking";
+                                    transferToChecking.AccountType = "savings";
+                                    database.AddTransaction(transferToChecking);
+
+                                    var transferFromSavings = new Transaction();
+                                    transferFromSavings.TransactionAmount = transferAmountToC;
+                                    transferFromSavings.TransactionType = "transfer from savings";
+                                    transferFromSavings.AccountType = "checking";
+                                    database.AddTransaction(transferFromSavings);
+
+                                    database.SaveTransactionsToCSV();
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Sorry, you cannot transfer more than you have in savings.");
+                                }
+
+                                break;
+                            case "B":
+                                // checking to savings
+                                var transferAmountToS = PromptForInt("How much would you like to transfer?");
+
+                                var balanceC = database.GetChecking();
+                                if (transferAmountToS <= balanceC)
+                                {
+                                    // make transfer
+                                    var transferFromChecking = new Transaction();
+                                    transferFromChecking.TransactionAmount = transferAmountToS;
+                                    transferFromChecking.TransactionType = "transfer from checking";
+                                    transferFromChecking.AccountType = "savings";
+                                    database.AddTransaction(transferFromChecking);
+
+                                    var transferToSavings = new Transaction();
+                                    transferToSavings.TransactionAmount = transferAmountToS;
+                                    transferToSavings.TransactionType = "transfer to savings";
+                                    transferToSavings.AccountType = "checking";
+                                    database.AddTransaction(transferToSavings);
+
+                                    database.SaveTransactionsToCSV();
+
+                                }
+                                else
+                                {
+                                    Console.WriteLine("Sorry, you cannot transfer more than you have in checking.");
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                        // ask amount
+                        break;
                     case "V":
 
                         // Get checking balance

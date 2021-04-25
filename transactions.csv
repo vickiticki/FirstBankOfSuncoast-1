@@ -3,3 +3,8 @@ TransactionAmount,AccountType,TransactionType
 200,savings,deposit
 50,savings,withdrawal
 20,checking,deposit
+5,checking,deposit
+20,savings,transfer to checking
+20,checking,transfer from savings
+20,savings,transfer from checking
+20,checking,transfer to savings

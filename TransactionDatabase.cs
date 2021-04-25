@@ -14,6 +14,14 @@ namespace FirstBankOfSuncoast
 
         private List<Transaction> transactions = new List<Transaction>();
 
+        // Get input from user and add to list
+
+        public void AddTransaction(Transaction newTransaction)
+        {
+            transactions.Add(newTransaction);
+
+        }
+
         // to check things 
         public List<Transaction> GetAllTransactions()
         {
@@ -48,13 +56,6 @@ namespace FirstBankOfSuncoast
             return checkingList;
         }
 
-        // Get input from user and add to list
-        // (save to csv)
-        public void AddTransaction(Transaction newTransaction)
-        {
-            transactions.Add(newTransaction);
-
-        }
 
         // THIS PART MIGHT MOVE
         // Method to calculate savings 
@@ -67,7 +68,7 @@ namespace FirstBankOfSuncoast
                 if (transactionS.AccountType == "savings")
                 {
                     // For each deposit add money to balance
-                    if (transactionS.TransactionType == "deposit")
+                    if (transactionS.TransactionType == "deposit" || transactionS.TransactionType == "transfer from checking")
                     {
                         savingsBalance += transactionS.TransactionAmount;
                     }
@@ -76,6 +77,7 @@ namespace FirstBankOfSuncoast
                         // For each withdrawal subtract money from balance
                         savingsBalance -= transactionS.TransactionAmount;
                     }
+
 
                 }
             }
@@ -91,7 +93,7 @@ namespace FirstBankOfSuncoast
                 // For each deposit add money to balance
                 if (transactionC.AccountType == "checking")
                 {
-                    if (transactionC.TransactionType == "deposit")
+                    if (transactionC.TransactionType == "deposit" || transactionC.TransactionType == "transfer from savings")
                     {
                         checkingBalance += transactionC.TransactionAmount;
                     }
